@@ -27,7 +27,7 @@ steps:
         resources=$(echo "$resources" | grep -v "$group")
       done
       
-      echo "$resources" > $(Build.ArtifactStagingDirectory)/resources.txt
+      echo "$resources" > $(Pipeline.Workspace)/resources.txt
 
 - task: SendEmail@1
   displayName: 'Send Email Notification'
@@ -37,6 +37,10 @@ steps:
     Body: |
       The following resources have been found in your Azure subscription:
 
-      $(cat $(Build.ArtifactStagingDirectory)/resources.txt)
-    SendConnection: 'SendGridConnection'
-  
+      $(cat $(Pipeline.Workspace)/resources.txt)
+    SmtpServer: 'smtp.office365.com'
+    SmtpPort: '587'
+    EnableSsl: true
+    SmtpAuthenticate: 'login'
+    SmtpUsername: '$(smtpUsername)'
+    SmtpPassword: '$(smtpPassword)'
