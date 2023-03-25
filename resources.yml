@@ -29,18 +29,31 @@ steps:
       
       echo "$resources" > $(Pipeline.Workspace)/resources.txt
 
-- task: SendEmail@1
+- task: PowerShell@2
   displayName: 'Send Email Notification'
   inputs:
-    To: 'chandu.pavuluri@gmail.com'
-    Subject: 'Azure Resource List'
-    Body: |
+    targetType: 'inline'
+    script: |
+      $emailTo = 'chandu.pavuluri@gmail.com'
+      $emailFrom = 'azuredevops@example.com'
+      $emailSubject = 'Azure Resource List'
+      $smtpServer = 'smtp.office365.com'
+      $smtpPort = '587'
+      $smtpUsername = '$(smtpUsername)'
+      $smtpPassword = '$(smtpPassword)'
+      $emailBody = @"
       The following resources have been found in your Azure subscription:
 
-      $(cat $(Pipeline.Workspace)/resources.txt)
-    SmtpServer: 'smtp.office365.com'
-    SmtpPort: '587'
-    EnableSsl: true
-    SmtpAuthenticate: 'login'
-    SmtpUsername: '$(smtpUsername)'
-    SmtpPassword: '$(smtpPassword)'
+      $(Get-Content $(Pipeline.Workspace)/resources.txt)
+      "@
+      $emailParams = @{
+          'To' = $emailTo
+          'From' = $emailFrom
+          'Subject' = $emailSubject
+          'SmtpServer' = $smtpServer
+          'SmtpPort' = $smtpPort
+          'UseSSL' = $true
+          'Credential' = New-Object System.Management.Automation.PSCredential ($smtpUsername, (ConvertTo-SecureString $smtpPassword -AsPlainText -Force))
+          'Body' = $emailBody
+      }
+      Send-MailMessage @emailParams
