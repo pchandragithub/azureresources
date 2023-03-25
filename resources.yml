@@ -32,10 +32,11 @@ steps:
 - task: SendEmail@1
   displayName: 'Send Email Notification'
   inputs:
-    To: chandu.pavuluri@gmail.com
+    To: 'chandu.pavuluri@gmail.com'
     Subject: 'Azure Resource List'
     Body: |
       The following resources have been found in your Azure subscription:
 
       $(cat $(Build.ArtifactStagingDirectory)/resources.txt)
-     version: '1.0.14'
+    SendConnection: 'SendGridConnection'
+  version: '1.0.0'
