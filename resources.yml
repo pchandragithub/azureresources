@@ -52,7 +52,7 @@ steps:
           'From' = $emailFrom
           'Subject' = $emailSubject
           'SmtpServer' = $smtpServer
-          'SmtpPort' = 587
+          'SmtpPort' = '587'
           'UseSSL' = $true
           'Credential' = New-Object System.Management.Automation.PSCredential ($smtpUsername, (ConvertTo-SecureString $smtpPassword -AsPlainText -Force))
           'Body' = $emailBody
