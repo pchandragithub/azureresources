@@ -1,0 +1,40 @@
+trigger:
+- none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Azure Login'
+  inputs:
+    azureSubscription: 92a7f901-cc7b-48fb-a34f-d1929b8fef19
+    scriptLocation: inlineScript
+    inlineScript: 'az login'
+
+- task: AzureCLI@2
+  displayName: 'Get Resource List'
+  inputs:
+    azureSubscription: 92a7f901-cc7b-48fb-a34f-d1929b8fef19
+    scriptLocation: inlineScript
+    inlineScript: |
+      # Get list of all resources
+      resources=$(az resource list --query "[?type!='Microsoft.Resources/deployments']" -o tsv)
+      
+      # Exclude certain resource groups
+      excluded_groups=("DefaultResourceGroup-EUS")
+      for group in ${excluded_groups[@]}; do
+        resources=$(echo "$resources" | grep -v "$group")
+      done
+      
+      echo "$resources" > $(Build.ArtifactStagingDirectory)/resources.txt
+
+- task: SendEmail@1
+  displayName: 'Send Email Notification'
+  inputs:
+    To: chandu.pavuluri@gmail.com
+    Subject: 'Azure Resource List'
+    Body: |
+      The following resources have been found in your Azure subscription:
+
+      $(cat $(Build.ArtifactStagingDirectory)/resources.txt)
