@@ -1,6 +1,7 @@
 trigger:
 - none
-
+variables:
+  system.debug: true
 pool:
   vmImage: 'ubuntu-latest'
 
