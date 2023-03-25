@@ -31,7 +31,7 @@ steps:
       
       echo "$resources" > $(Pipeline.Workspace)/resources.txt
 
-- task: PowerShell@7
+- task: PowerShell@5
   displayName: 'Send Email Notification'
   inputs:
     targetType: 'inline'
