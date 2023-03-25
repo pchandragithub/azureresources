@@ -2,7 +2,7 @@ trigger:
 - none
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 steps:
 - task: AzureCLI@2
@@ -10,7 +10,7 @@ steps:
   inputs:
     azureSubscription: 92a7f901-cc7b-48fb-a34f-d1929b8fef19
     scriptLocation: inlineScript
-    scriptType: bash
+    scriptType: powershell
     inlineScript: 'az login'
 
 - task: AzureCLI@2
@@ -18,18 +18,18 @@ steps:
   inputs:
     azureSubscription: 92a7f901-cc7b-48fb-a34f-d1929b8fef19
     scriptLocation: inlineScript
-    scriptType: bash
+    scriptType: powershell
     inlineScript: |
       # Get list of all resources
-      resources=$(az resource list --query "[?type!='Microsoft.Resources/deployments']" -o tsv)
+      $resources = az resource list --query "[?type!='Microsoft.Resources/deployments']" -o tsv
       
       # Exclude certain resource groups
-      excluded_groups=("DefaultResourceGroup-EUS")
-      for group in ${excluded_groups[@]}; do
-        resources=$(echo "$resources" | grep -v "$group")
-      done
+      $excluded_groups = @("DefaultResourceGroup-EUS")
+      foreach ($group in $excluded_groups) {
+        $resources = $resources | Select-String -Pattern $group -NotMatch
+      }
       
-      echo "$resources" > $(Pipeline.Workspace)/resources.txt
+      $resources | Out-File -FilePath "$(Pipeline.Workspace)/resources.txt" -Encoding utf8
 
 - task: PowerShell@7.2.0
   displayName: 'Send Email Notification'
