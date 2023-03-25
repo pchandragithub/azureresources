@@ -38,3 +38,4 @@ steps:
       The following resources have been found in your Azure subscription:
 
       $(cat $(Build.ArtifactStagingDirectory)/resources.txt)
+     version: '1.0.14'
