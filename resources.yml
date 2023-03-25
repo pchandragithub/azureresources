@@ -31,7 +31,7 @@ steps:
       
       $resources | Out-File -FilePath "$(Pipeline.Workspace)/resources.txt" -Encoding utf8
 
-- task: PowerShell@7.2.0
+- task: PowerShell@7
   displayName: 'Send Email Notification'
   inputs:
     targetType: 'inline'
