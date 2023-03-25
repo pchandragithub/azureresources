@@ -31,15 +31,16 @@ steps:
       
       echo "$resources" > $(Pipeline.Workspace)/resources.txt
 
-- task: PowerShell@2
+- task: PowerShell@7
   displayName: 'Send Email Notification'
   inputs:
     targetType: 'inline'
     script: |
       $emailTo = 'chandu.pavuluri@gmail.com'
-      $emailFrom = 'azuredevops@example.com'
+      $emailFrom = 'support@cxpardise.com'
       $emailSubject = 'Azure Resource List'
       $smtpServer = 'smtp.office365.com'
+      $smtpPort = 587
       
       $smtpUsername = '$(smtpUsername)'
       $smtpPassword = '$(smtpPassword)'
@@ -53,6 +54,7 @@ steps:
           'From' = $emailFrom
           'Subject' = $emailSubject
           'SmtpServer' = $smtpServer
+          'SmtpPort' = $smtpPort
           'UseSSL' = $true
           'Credential' = New-Object System.Management.Automation.PSCredential ($smtpUsername, (ConvertTo-SecureString $smtpPassword -AsPlainText -Force))
           'Body' = $emailBody
