@@ -40,7 +40,6 @@ steps:
       $emailFrom = 'azuredevops@example.com'
       $emailSubject = 'Azure Resource List'
       $smtpServer = 'smtp.office365.com'
-      $port = 587
       $smtpUsername = '$(smtpUsername)'
       $smtpPassword = '$(smtpPassword)'
       $emailBody = @"
@@ -53,7 +52,7 @@ steps:
           'From' = $emailFrom
           'Subject' = $emailSubject
           'SmtpServer' = $smtpServer
-          'SmtpPort' = $smtpPort
+          'SmtpPort' = 587
           'UseSSL' = $true
           'Credential' = New-Object System.Management.Automation.PSCredential ($smtpUsername, (ConvertTo-SecureString $smtpPassword -AsPlainText -Force))
           'Body' = $emailBody
