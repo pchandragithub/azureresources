@@ -39,4 +39,4 @@ steps:
 
       $(cat $(Build.ArtifactStagingDirectory)/resources.txt)
     SendConnection: 'SendGridConnection'
-  version: '1.2.2'
+  
